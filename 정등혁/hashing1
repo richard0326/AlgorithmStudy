@@ -1,0 +1,24 @@
+#include <string>
+#include <vector>
+#include <map>
+using namespace std;
+
+int solution(vector<vector<string>> clothes) {
+    int answer = 1;
+	map<string, int> mm;
+
+	for (vector<string> vStr : clothes) {
+		if (mm.end() != mm.find(vStr[1]))
+			mm[vStr[1]]++;
+		else
+			mm[vStr[1]] = 1;
+	}
+
+	map<string, int>::iterator iter;
+
+	for (iter = mm.begin(); iter != mm.end(); iter++) {
+		answer *= (iter->second + 1);
+	}
+	answer--;
+	return answer;
+}
