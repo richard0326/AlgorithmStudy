@@ -1,0 +1,33 @@
+#include <iosteam>
+using namespace std;
+
+int n, k;
+int coin[101];
+long long dp[10001];
+long long tmp[10001];
+
+int main() {
+	scanf("%d %d", &n, &k);
+
+	for (int i = 1; i <= n; i++) {
+		scanf("%d", &coin[i]);
+	}
+
+	tmp[0] = 1;
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= k; j++) {
+			if (j < coin[i])
+				tmp[j] = dp[j];
+			else
+				tmp[j] = dp[j] + tmp[j - coin[i]];
+		}
+
+		for (int j = 1; j <= k; j++) {
+			dp[j] = tmp[j];
+		}
+	}
+
+	printf("%d\n", dp[k]);
+
+	return 0;
+}
