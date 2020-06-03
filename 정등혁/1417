@@ -1,0 +1,31 @@
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int n;
+int candidate[1001];
+
+int main() {
+
+	scanf("%d", &n);
+
+	int target;
+	scanf("%d", &target);
+	for (int i = 1; i < n; i++)
+		scanf("%d", &candidate[i]);
+
+	sort(candidate + 1, candidate + n);
+
+	int count = 0;
+	while(target <= candidate[n-1])
+	{
+		candidate[n-1]--;
+		target++;
+		sort(candidate + 1, candidate + n);
+		count++;
+	}
+
+	printf("%d\n", count);
+
+	return 0;
+}
