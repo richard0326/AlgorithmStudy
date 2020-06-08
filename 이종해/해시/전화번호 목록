@@ -1,0 +1,88 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+
+#define NUMBER 10
+bool answer = true;
+
+class Trie
+{
+    Trie* P_Number[NUMBER];                 //tree 구조로 0~9까지의 숫자 10개를 저장하는 노드를 생성
+    bool check;
+
+public:
+    Trie()      //생성자
+    {
+        for (int i = 0; i < NUMBER; i++)
+        {
+            check = false;
+            P_Number[i] = NULL;
+        }
+    }
+    ~Trie()     //소멸자
+    {
+        for (int i = 0; i < NUMBER; i++)
+        {
+            if (P_Number[i] != NULL)
+                delete P_Number[i];
+        }
+
+    }
+    int tonum(char c)                   //문자를 숫자로 변환
+    { 
+        return c - '0'; 
+    }
+
+    void insert(const char* num)                //ex 119
+    {
+        if (*num == '\0')       //현재 받은 주소의 문자가 문자열 끝에 도달했는지        ex)119\0
+        {
+            check = true;          //이 문자는 채워진 문자임을 확인
+            for (int i = 0; i < NUMBER; i++)
+            {
+                if (P_Number[i] != NULL)   //해당문자의 끝도 도달햇지만 다음 문자가 비어있지 않는 중복인경우
+                {
+                    answer = false;
+                }
+            }
+            return;
+        }
+
+        if (check == true)      //끝에도착하지 못햇는데 이미 중복되는 경우
+        {
+            answer = false;
+            return;
+        }
+
+        int next = tonum(*num);             //문자의 끝도 아니고 중복된(채워진) 문자도 없을경우              ex) 1     ex)1
+
+        if (P_Number[next] == NULL)         //해당 숫자가 비어있다면                  
+        {
+            P_Number[next] = new Trie();            //새로운 노드를 생성함(생성자)   -> 비어있는 노드로 채워져 있음 상태로 만듦
+            P_Number[next]->insert(num + 1);        //다음 주소(문자)를 가리킴        -> 노드를 채워줌                          ex) P_Number[1]->insert(1) *1 + 1 = 1        ex)P_Number[1]->insert(9) *1 + 1 =9
+        }
+        P_Number[next]->insert(num + 1);        //채워져있다면 새로 넣지않고 다음 문자로 이동          
+    }
+};
+
+bool solution(vector<string> phone_book) {
+    
+    Trie pon_trie;
+
+    for (int i = 0; i < phone_book.size(); i++)
+    {
+        answer = true;
+        pon_trie.insert(phone_book[i].c_str());      //생성된 tree에 phone_book의 i번째 번호를 문자열 주소값으로 전송       
+        if (answer == false)
+        {
+            return false;
+        }
+    }
+    return answer;
+}
+
+int main()
+{
+    return 0;
+}
