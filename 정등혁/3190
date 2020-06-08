@@ -1,0 +1,97 @@
+#include <iostream>
+using namespace std;
+
+int n;
+int k;
+int map[101][101];
+
+int fx[4] = { 1, 0, -1, 0};
+int fy[4] = { 0, 1, 0, -1 };
+
+int headX = 1;
+int headY = 1;
+int tailX = 1;
+int tailY = 1;
+int dir[10112];
+
+int l;
+int dirInfo[10112];
+
+int main() {
+
+	scanf("%d", &n);
+
+	scanf("%d", &k);
+	for (int i = 0; i < k; i++) {
+		int t1, t2;
+		scanf("%d %d", &t1, &t2);
+		map[t1][t2] = 2;
+	}
+	map[1][1] = 1;
+
+	scanf("%d", &l);
+	for (int i = 0; i < l; i++)
+	{
+		int x;
+		char c;
+		scanf("%d %c", &x, &c);
+
+		if (c == 'D')
+		{
+			dirInfo[x+1] = 1;
+		}
+		else
+		{
+			dirInfo[x+1] = -1;
+		}
+	}
+
+	for (int i = 1; i <= 10112; i++)
+	{
+		if (dirInfo[i] == 1)
+		{
+			dir[i] = (dir[i - 1] + 1) % 4;
+		}
+		else if (dirInfo[i] == -1)
+		{
+			dir[i] = (dir[i - 1] + 4 - 1) % 4;
+		}
+		else {
+			dir[i] = dir[i - 1];
+		}
+	}
+
+	int len = 0;
+	int count = 0;
+	for(int i = 1; i<=10112; i++)
+	{
+		count++;
+		int nextX = headX + fx[dir[i]];
+		int nextY = headY + fy[dir[i]];
+		
+		if (nextX < 1 || nextY < 1 || nextX > n || nextY > n || map[nextY][nextX] == 1)
+			break;
+		
+		int nextTX = tailX + fx[dir[i - len]];
+		int nextTY = tailY + fy[dir[i - len]];
+
+		headX = nextX;
+		headY = nextY;
+		
+		if (map[nextY][nextX] == 2)
+		{
+			len++;
+		}
+		else {
+			map[tailY][tailX] = 0;
+			tailX = nextTX;
+			tailY = nextTY;
+		}
+
+		map[headY][headX] = 1;
+	}	
+
+	printf("%d\n", count);
+
+	return 0;
+}
