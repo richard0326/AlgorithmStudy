@@ -1,0 +1,60 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <unordered_map>
+
+using namespace std;
+
+string solution(vector<string> participant, vector<string> completion) {
+    string answer = "";
+    
+    std::unordered_map<string, int> part;
+
+    
+
+    for (int i = 0; i < participant.size(); i++)
+    {
+        ++part[participant[i]];             //i번째 출전자의 key값에 value를 +1      출전자 이름이 123 이라면, 123이름의 key 값을 +1
+    }
+
+    for (int i = 0; i < completion.size(); i++)
+    {
+        --part[completion[i]];          //i번째 완주자 key값에 value를 -1           완주자 이름이 123 이라면, 123이름의 key값을 -1
+    }
+
+    //key vaule 로 묶인 pair를 선언하고 part의 항목 수 만큼 반복하며 각 항목의 순서대로 꺼내에 변수에 대입
+    //ex int [] a = {1, 2 ,3 ,4 ,5};
+    //   for(int i : a) == for(int i=0; i< a.length; i++)
+    for (pair<string, int>  pair : part)        
+    {                                                  
+        if (pair.second > 0)    //최종적으로 key값의 value가 0을 넘어서면 누군가 완주하지 못한것 (몇번째 출전자인지 완주자인지 따지지않고 이름만 묻기때문에 상관없음)
+        {
+            return pair.first;
+        }
+    }
+                
+}
+
+int main()
+{
+    vector<string> part(4);
+    vector<string> comp(3);
+    string a = "";
+
+    part[0] = "123";
+    part[1] = "456";
+    part[2] = "123";
+    part[3] = "789";
+
+    comp[0] = "123";
+    comp[1] = "789";
+    comp[2] = "456";
+
+
+    a = solution(part, comp);
+
+    cout << "완주하지 못한 선수는 " << a << "입니다." << endl;
+
+    return 0;
+}
