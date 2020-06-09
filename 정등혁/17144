@@ -1,0 +1,152 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <queue>
+using namespace std;
+
+// r행, c열, t초
+int r, c, t;
+int map[51][51];
+int sidemap[51][51];
+
+int topX;
+int topY;
+int botX;
+int botY;
+
+queue<pair<int, int>> q;
+
+int fx[4] = { 1, -1, 0, 0 };
+int fy[4] = { 0, 0, 1, -1 };
+
+int main() {
+
+	scanf("%d %d %d", &r, &c, &t);
+
+	for (int j = 1; j <= r; j++)
+	{
+		for (int i = 1; i <= c; i++)
+		{
+			scanf("%d", &map[j][i]);
+
+			if (map[j][i] == -1)
+			{
+				if (topX == 0 && topY == 0)
+				{
+					topX = j;
+					topY = i;
+				}
+				else
+				{
+					botX = j;
+					botY = i;
+				}
+			}
+			else if (map[j][i] != 0)
+			{
+				q.push(make_pair(j, i));
+			}
+		}
+	}
+
+	while (t--)
+	{
+		queue<pair<int, int>> t;
+		while (!q.empty())
+		{
+			t.push(q.front());
+			q.pop();
+		}
+
+		for (int j = 1; j <= r; j++)
+		{
+			for (int i = 1; i <= c; i++)
+			{
+				sidemap[j][i] = 0;
+			}
+		}
+
+		while (!t.empty())
+		{
+			int x = t.front().first;
+			int y = t.front().second;
+			t.pop();
+
+			int before = map[x][y];
+			int after = before / 5;
+
+			int countAround = 0;
+			for (int i = 0; i < 4; i++)
+			{
+				int tx = x + fx[i];
+				int ty = y + fy[i];
+
+				if (0 < tx && tx <= r && 0 < ty && ty <= c && map[tx][ty] != -1)
+				{
+					countAround++;
+				}
+			}
+
+			if (countAround == 0)
+			{
+				continue;
+			}
+
+			sidemap[x][y] -= after * countAround;
+
+			for (int i = 0; i < 4; i++)
+			{
+				int tx = x + fx[i];
+				int ty = y + fy[i];
+
+				if (0 < tx && tx <= r && 0 < ty && ty <= c && map[tx][ty] != -1)
+				{
+					sidemap[tx][ty] += after;
+				}
+			}
+		}
+
+		for (int j = 1; j <= r; j++)
+		{
+			for (int i = 1; i <= c; i++)
+			{
+				map[j][i] += sidemap[j][i];
+			}
+		}
+
+		int tmpT1 = 0;
+		int tmpT2 = 0;
+		int tmpB1 = 0;
+		int tmpB2 = 0;
+		for (int i = 2; i < c; i++)
+		{		
+			tmpT1 = map[topX][i+1];
+			map[topX][i + 1] = map[topX][i];
+			map[topX][i] = tmpT2;
+			tmpT2 = tmpT1;
+
+			//tmp2 = map[botX][i + 1];
+			//map[botX][i + 1] = map[botX][i];
+		}
+
+		// 주워서 큐에 넣는거
+
+		for (int j = 1; j <= r; j++) {
+			for (int i = 1; i <= c; i++) {
+				printf("%2d ", map[j][i]);
+			}
+			printf("\n");
+		}
+
+		int a = 90;
+		a++;
+	}
+
+	for (int j = 1; j <= r; j++) {
+		for (int i = 1; i <= c; i++) {
+			printf("%d ", map[j][i]);
+		}
+		printf("\n");
+	}
+
+	return 0;
+}
