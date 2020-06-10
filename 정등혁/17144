@@ -50,26 +50,11 @@ int main() {
 
 	while (t--)
 	{
-		queue<pair<int, int>> t;
 		while (!q.empty())
 		{
-			t.push(q.front());
+			int x = q.front().first;
+			int y = q.front().second;
 			q.pop();
-		}
-
-		for (int j = 1; j <= r; j++)
-		{
-			for (int i = 1; i <= c; i++)
-			{
-				sidemap[j][i] = 0;
-			}
-		}
-
-		while (!t.empty())
-		{
-			int x = t.front().first;
-			int y = t.front().second;
-			t.pop();
 
 			int before = map[x][y];
 			int after = before / 5;
@@ -110,43 +95,59 @@ int main() {
 			for (int i = 1; i <= c; i++)
 			{
 				map[j][i] += sidemap[j][i];
+				sidemap[j][i] = map[j][i];
 			}
 		}
 
-		int tmpT1 = 0;
-		int tmpT2 = 0;
-		int tmpB1 = 0;
-		int tmpB2 = 0;
+		sidemap[topX][2] = 0;
+		sidemap[botX][2] = 0;
 		for (int i = 2; i < c; i++)
 		{		
-			tmpT1 = map[topX][i+1];
-			map[topX][i + 1] = map[topX][i];
-			map[topX][i] = tmpT2;
-			tmpT2 = tmpT1;
-
-			//tmp2 = map[botX][i + 1];
-			//map[botX][i + 1] = map[botX][i];
+			sidemap[topX][i + 1] = map[topX][i];
+			sidemap[botX][i + 1] = map[botX][i];
+			sidemap[1][i] = map[1][i+1];
+			sidemap[r][i] = map[r][i+1];
 		}
+		
+		for (int i = topX-1; i > 0; i--)
+		{
+			sidemap[i][1] = map[i - 1][1];
+			sidemap[i][c] = map[i + 1][c];
+		}
+
+		for (int i = botX + 1; i <= r; i++)
+		{
+			if (i + 1 <= r) {
+				sidemap[i][1] = map[i + 1][1];
+			}
+			sidemap[i][c] = map[i - 1][c];
+		}
+
+		sidemap[1][1] = map[1][2];
+		sidemap[r][1] = map[r][2];
 
 		// 주워서 큐에 넣는거
-
 		for (int j = 1; j <= r; j++) {
 			for (int i = 1; i <= c; i++) {
-				printf("%2d ", map[j][i]);
+				if (sidemap[j][i] != 0 && sidemap[j][i] != -1) {
+					q.push(make_pair(j, i));
+				}
+				map[j][i] = sidemap[j][i];
+				sidemap[j][i] = 0;
 			}
-			printf("\n");
 		}
-
-		int a = 90;
-		a++;
 	}
 
+	int count = 0;
 	for (int j = 1; j <= r; j++) {
 		for (int i = 1; i <= c; i++) {
-			printf("%d ", map[j][i]);
+			if (map[j][i] != 0 && map[j][i] != -1) {
+				count += map[j][i];
+			}
 		}
-		printf("\n");
 	}
+
+	printf("%d\n", count);
 
 	return 0;
 }
