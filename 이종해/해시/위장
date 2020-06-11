@@ -1,0 +1,24 @@
+#include <string>
+#include <vector>
+#include <unordered_map>
+#include <set>
+
+using namespace std;
+
+int solution(vector<vector<string>> clothes) {
+    int answer = 1;
+    std::unordered_map<string, int> C_index;
+
+    for (vector<string> pair : clothes)
+    {
+        C_index[pair[1]]++;         //각 옷의 갯수를 세어서 저장
+    }
+
+    std::unordered_map<string, int>::iterator iter;
+    for (iter = C_index.begin(); iter != C_index.end(); iter++)             //iter 는 C_index의 처음부터 끝까지 이동하며 string(key)의 int(갯수)를 탐색한다
+    {
+        answer *= iter->second + 1;                                     //얼굴 총갯수 +1 * 상의총갯수 +1 * 하의 총갯수+1 *겉옷 총갯수 +1  
+    }                                                                   //          ->인덱스의 첫번째 키의 총갯수 +1 *다음 총갯수 +1 * .......
+
+    return answer - 1;                    //+1 은 총 갯수에서 입지 안은 경우의수 -1은 모든 옷이 입지 않은 경우의 1번의 횟수를 뺀것
+}
