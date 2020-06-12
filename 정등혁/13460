@@ -1,0 +1,304 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+using namespace std;
+typedef pair<int, int> pii;
+
+int n, m;
+char map[11][11];
+pii red, blue, goal;
+
+int maze(int dir, pii _red, pii _blue, int count)
+{
+	if (count == 11)
+	{
+		return -1;
+	}
+	
+	int ans = 11;
+	pii saveR = _red;
+	pii saveB = _blue;
+	bool redOut = false;
+	bool blueOut = false;
+
+	if (dir != -1)
+	{
+		if (dir == 0) // 왼쪽
+		{
+			for (int i = 1; i <= n; i++)
+			{
+				for (int j = 0; j < m; j++)
+				{
+					if (_red.first == i && _red.second == j)
+					{
+						for (int k = j; k > 0; k--)
+						{
+							if (map[i][k-1] == 'O')
+							{
+								map[_red.first][_red.second] = '.';
+								_red.first = 0;
+								_red.second = 0;
+								redOut = true;
+								break;
+							}
+							else if (map[i][k-1] == '#' || (_blue.first == i && _blue.second == k-1))
+							{
+								map[_red.first][_red.second] = '.';
+								map[i][k] = 'R';
+								_red.first = i;
+								_red.second = k;
+								break;
+							}
+						}
+					}
+
+					if (_blue.first == i && _blue.second == j)
+					{
+						for (int k = j; k > 0; k--)
+						{
+							if (map[i][k - 1] == 'O')
+							{
+								map[_blue.first][_blue.second] = '.';
+								_blue.first = 0;
+								_blue.second = 0;
+								blueOut = true;
+								break;
+							}
+							else if (map[i][k - 1] == '#' || (_red.first == i && _red.second == k - 1))
+							{
+								map[_blue.first][_blue.second] = '.';
+								map[i][k] = 'B';
+								_blue.first = i;
+								_blue.second = k;
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		else if (dir == 1) // 위
+		{
+			for (int i = 1; i <= n; i++)
+			{
+				for (int j = 0; j < m; j++)
+				{
+					if (_red.first == i && _red.second == j)
+					{
+						for (int k = i; k > 0; k--)
+						{
+							if (map[k - 1][j] == 'O')
+							{
+								map[_red.first][_red.second] = '.';
+								_red.first = 0;
+								_red.second = 0;
+								redOut = true;
+								break;
+							}
+							else if (map[k - 1][j] == '#' || (_blue.first == k-1 && _blue.second == j))
+							{
+								map[_red.first][_red.second] = '.';
+								map[k][j] = 'R';
+								_red.first = k;
+								_red.second = j;
+								break;
+							}
+						}
+					}
+
+					if (_blue.first == i && _blue.second == j)
+					{
+						for (int k = i; k > 0; k--)
+						{
+							if (map[k - 1][j] == 'O')
+							{
+								map[_blue.first][_blue.second] = '.';
+								_blue.first = 0;
+								_blue.second = 0;
+								blueOut = true;
+								break;
+							}
+							else if (map[k - 1][j] == '#' || (_red.first == k - 1 && _red.second == j))
+							{
+								map[_blue.first][_blue.second] = '.';
+								map[k][j] = 'B';
+								_blue.first = k;
+								_blue.second = j;
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		else if (dir == 2) // 우측
+		{
+			for (int i = 1; i <= n; i++)
+			{
+				for (int j = m-1; j >= 0; j--)
+				{
+					if (_red.first == i && _red.second == j)
+					{
+						for (int k = j; k < m; k++)
+						{
+							if (map[i][k+1] == 'O')
+							{
+								map[_red.first][_red.second] = '.';
+								_red.first = 0;
+								_red.second = 0;
+								redOut = true;
+								break;
+							}
+							else if (map[i][k+1] == '#' || (_blue.first == i && _blue.second == k+1))
+							{
+								map[_red.first][_red.second] = '.';
+								map[i][k] = 'R';
+								_red.first = i;
+								_red.second = k;
+								break;
+							}
+						}
+					}
+
+					if (_blue.first == i && _blue.second == j)
+					{
+						for (int k = j; k < m; k++)
+						{
+							if (map[i][k + 1] == 'O')
+							{
+								map[_blue.first][_blue.second] = '.';
+								_blue.first = 0;
+								_blue.second = 0;
+								blueOut = true;
+								break;
+							}
+							else if (map[i][k + 1] == '#' || (_red.first == i && _red.second == k + 1))
+							{
+								map[_blue.first][_blue.second] = '.';
+								map[i][k] = 'B';
+								_blue.first = i;
+								_blue.second = k;
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		else if (dir == 3) // 아래
+		{
+			for (int i = n; i > 0; i--)
+			{
+				for (int j = 0; j < m; j++)
+				{
+					if (_red.first == i && _red.second == j)
+					{
+						for (int k = i; k < n; k++)
+						{
+							if (map[k + 1][j] == 'O')
+							{
+								map[_red.first][_red.second] = '.';
+								_red.first = 0;
+								_red.second = 0;
+								redOut = true;
+								break;
+							}
+							else if (map[k + 1][j] == '#' || (_blue.first == k+1 && _blue.second == j))
+							{
+								map[_red.first][_red.second] = '.';
+								map[k][j] = 'R';
+								_red.first = k;
+								_red.second = j;
+								break;
+							}
+						}
+					}
+
+					if (_blue.first == i && _blue.second == j)
+					{
+						for (int k = i; k < n; k++)
+						{
+							if (map[k + 1][j] == 'O')
+							{
+								map[_blue.first][_blue.second] = '.';
+								_blue.first = 0;
+								_blue.second = 0;
+								blueOut = true;
+								break;
+							}
+							else if (map[k + 1][j] == '#' || (_red.first == k + 1 && _red.second == j))
+							{
+								map[_blue.first][_blue.second] = '.';
+								map[k][j] = 'B';
+								_blue.first = k;
+								_blue.second = j;
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if (dir != -1 && saveR == _red && saveB == _blue)
+	{
+		return -1;
+	}
+	if (blueOut == true)
+	{
+		return -1;
+	}
+	if (redOut == true && blueOut == false)
+	{
+		return count;
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (dir == -1 || (i + 4) % 2 != (dir + 4) % 2)
+		{
+			int ret = maze(i, _red, _blue, count + 1);
+			if (ret != -1 && ret < ans)
+			{
+				ans = ret;
+			}
+		}
+	}
+
+	if (ans == 11)
+	{
+		return -1;
+	}
+	
+	return ans;
+}
+
+int main()
+{
+	scanf("%d %d", &n, &m);
+
+	for (int i = 1; i <= n; i++)
+	{
+		scanf("%s", map[i]);
+		for (int j = 0; j < m; j++)
+		{
+			if (map[i][j] == 'R')
+			{
+				red = pii(i, j);
+			}
+
+			if (map[i][j] == 'B')
+			{
+				blue = pii(i, j);
+			}
+
+			if (map[i][j] == 'O')
+			{
+				goal = pii(i, j);
+			}
+		}
+	}
+
+	printf("%d\n", maze(-1, red, blue, 0));
+	return 0;
+}
