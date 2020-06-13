@@ -1,0 +1,119 @@
+#include <iostream>
+#include <vector>
+#include <math.h>
+using namespace std;
+
+int n, m, d;
+int a[16][16];
+bool archer[16];
+vector<pair<int, int>> enemy;
+int maxV;
+
+void calEnemyDead()
+{
+	bool b[16][16] = { false, };
+	int kill = 0;
+	bool isEnemy = false;
+	bool isEnemies = false;
+
+	for (int k = 0; k < n; k++)	// 한칸씩 줄어든다...
+	{
+		int isDyingX[16] = { 0, };
+		int isDyingY[16] = { 0, };
+
+		for (int j = 1; j <= m; j++) 
+		{
+			if (archer[j] == true) // 3번
+			{
+				int min = 50000;
+				
+				pair<int, int> pMin = pair<int, int>(0, 0);
+				isEnemy = false;
+				for (int i = 0; i < enemy.size(); i++) // 적과의 최단 거리 구하는 for문
+				{
+					pair<int, int> p = enemy[i];
+					if ((n + 1 - k) <= p.first)
+					{
+						continue;
+					}
+					
+					int dist = abs(p.first - (n + 1 - k)) + abs(p.second - j);
+					if (dist <= d && min > dist && b[p.first][p.second] == false)
+					{
+						min = dist;
+						pMin = enemy[i];
+						isEnemy = true;
+					}
+				}
+
+				if (isEnemy == true && b[pMin.first][pMin.second] == false)
+				{
+					isDyingX[j] = pMin.first;
+					isDyingY[j] = pMin.second;
+				}
+			}
+		}
+
+		for (int l = 1; l <= m; l++)
+		{
+			int _x = isDyingX[l];
+			int _y = isDyingY[l];
+			if (_x != 0 && _y != 0 && b[_x][_y] == false)
+			{
+				b[_x][_y] = true;
+				kill++;
+			}
+		}
+	}
+
+	if (kill > maxV)
+	{
+		maxV = kill;
+	}
+}
+
+void findArcherDfs(int start, int count)
+{
+	if (count == 3)
+	{		
+		calEnemyDead();
+		return;
+	}
+
+	for (int i = start; i <= m; i++)
+	{
+		archer[i] = true;
+		findArcherDfs(i + 1, count + 1);
+		archer[i] = false;
+	}
+}
+
+int main()
+{
+	cin >> n;
+	cin >> m;
+	cin >> d;
+	for (int i = 1; i <= n; i++)
+	{
+		for (int j = 1; j <= m; j++)
+		{
+			scanf("%1d", &a[i][j]);
+		}
+	}
+
+	for (int j = 1; j <= m; j++)
+	{
+		for (int i = 1; i <= n; i++)
+		{
+			if (a[i][j] == 1)
+			{
+				enemy.push_back(pair<int, int>(i, j));
+			}
+		}
+	}
+
+	findArcherDfs(1, 0);
+	printf("%d\n", maxV);
+
+	return 0;
+}
