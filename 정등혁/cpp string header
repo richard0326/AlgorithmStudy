@@ -1,0 +1,167 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+using namespace std;
+
+size_t my_strlen(const char* str)
+{
+	int count = 0;
+	for (;;)
+	{
+		if (str[count] == '\0')
+		{
+			break;
+		}
+		count++;
+	}
+	return count;
+}
+
+char* my_strcpy(char* ToStr, const char* FromStr)
+{
+	int idx = 0;
+	for (;;)
+	{
+		if (FromStr[idx] == '\0')
+		{
+			ToStr[idx] = '\0';
+			break;
+		}
+
+		ToStr[idx] = FromStr[idx];
+		idx++;
+	}
+	return ToStr + idx;
+}
+
+int my_strcmp(const char* str1, const char* str2)
+{
+	int ret = 0;
+	int idx = 0;
+	for (;;)
+	{
+		if (str1[idx] == '\0' && str2[idx] == '\0')
+		{
+			return 0;
+		}
+
+		ret = str1[idx] - str2[idx];
+		if (str1[idx] == '\0' || str2[idx] == '\0')
+		{
+			break;
+		}
+		idx++;
+	}
+
+	if (ret > 0)
+	{
+		ret = 1;
+	}
+	else {
+		ret = -1;
+	}
+	return ret;
+}
+
+char* my_strcat(char* str1, const char* str2)
+{
+	int idx = 0;
+	for (;;)
+	{
+		if (str1[idx] == '\0')
+		{
+			break;
+		}
+		idx++;
+	}
+
+	int idx2 = 0;
+	for (;;)
+	{
+		if (str2[idx2] == '\0')
+		{
+			str1[idx] = '\0';
+			break;
+		}
+		str1[idx] = str2[idx2];
+		idx++;
+		idx2++;
+	}
+
+	return str1;
+}
+
+char* my_strchr(const char* str, int c)
+{
+	int idx = 0;
+	for (;;)
+	{
+		if (str[idx] == c || str[idx] == '\0')
+		{
+			break;
+		}
+		idx++;
+	}
+
+	return (char*)str + idx;
+}
+
+char* my_strstr(const char* str, const char* search)
+{
+	bool success = true;
+	int i = 0;
+	for (; str[i] != '\0'; i++)
+	{
+		success = true;
+		for (int j = 0; search[j] != '\0'; j++)
+		{
+			if (str[i + j] != search[j])
+			{
+				success = false;
+				break;
+			}
+		}
+		if (success == true)
+		{
+			break;
+		}
+	}
+
+	return (char*)str + i;
+}
+
+char* my_strlwr(char* str)
+{
+	for (int i = 0; str[i] != '\0'; i++)
+	{
+		if ('A' <= str[i] && str[i] <= 'Z')
+		{
+			str[i] += 32;
+		}
+	}
+
+	return str;
+}
+
+int main()
+{
+	const char* aa = "aaaaaaa";
+	cout << my_strlen(aa) << endl;
+
+	char buf[20];
+	my_strcpy(buf, aa);
+	cout << buf << endl;
+
+	const char* bb = "aaaaaaabb";
+	cout << my_strcmp(buf, bb) << endl;
+
+	char cc[50] = "cc";
+	cout << my_strcat(cc, aa) << endl;
+	
+	char dd[50] = "abcdefghijklmno";
+	cout << my_strchr(dd, 'o') << endl;
+	cout << my_strstr(dd, "def") << endl;
+
+	char ee[50] = "ABCDEFGHIJKLMNO";
+	cout << strlwr(ee) << endl;
+	return 0;
+}
