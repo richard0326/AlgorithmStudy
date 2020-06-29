@@ -1,0 +1,74 @@
+#include <string>
+#include <vector>
+#include <map>
+#include <set>
+#include <algorithm>
+
+using namespace std;
+
+vector<int> solution(vector<string> genres, vector<int> plays) {
+    vector<int> answer;
+    map<string, map<int, set<int>, greater<int>>> list;         //   노래 <재생수, 장르별 노래목록, >
+    map<string, int> max;
+    map<int, string, greater<int>> sort;
+    int i = 0;
+
+    for_each(genres.begin(), genres.end(), [&](string s) 
+        {
+        if (list.find(s) == list.end())
+        {
+            map<int, set<int>, greater<int>> m;  //                   
+            set<int> index;
+
+            index.insert(i);
+            max.emplace(s, plays[i]);               //장르별 총재생수
+            m.emplace(plays[i], index);             //재생수 별 노래
+            list.emplace(s, m);                     //노래 <재생수 별 노래>
+        }
+        else
+        {
+            map<int, set<int>, greater<int>>::iterator itr;
+            if ((itr = list[s].find(plays[i])) == list[s].end())        //list key = string  == 새로운(아직 등록되지 않은) 노래 장르라면
+            {
+                set<int> index;
+                index.insert(i);
+                list[s].emplace(plays[i], index);       //해당 곡(s)의 재생횟수, 재생목록(index)
+                max[s] += plays[i];                     //해당 장르(s)의 + 재생횟수
+            }
+            else
+            {
+                itr->second.insert(i);       //set<int> = index
+                max[s] += plays[i];
+            }
+        }
+        i++;
+        });             //여기까지 for_each(1, 2, 3 func{})
+
+    for_each(max.begin(), max.end(), [&](pair<string, int> itr) {sort.emplace(itr.second, itr.first); });        //max = 장르별 총재생수  sort = 총재생수별 장르 -> 재생수 정렬
+
+    for_each(sort.begin(), sort.end(), [&](pair<int, string> s)
+        {
+            map<int, set<int>, greater<int>>::iterator m = list[s.second].begin();
+            set<int>::iterator itr = m->second.begin();
+
+            if (list[s.second].size() == 1)         //장르별 재생수종류가 1개일때
+            {
+                answer.push_back(*itr);
+                return;
+            }
+
+            for (int i = 0; i < 2; i++)                 //각 장르별 2순위까지 검색
+            {
+                if (m->second.size() > 1 && i == 0)            //재생수가 중복될경우
+                {
+                    answer.push_back(*(itr++));
+                    answer.push_back(*(itr++));         //중복의 경우 itr를 2개 넘너뜀
+                    return;
+                }
+                answer.push_back(*itr);             //중복이 없을경우 itr는 하나만 건너뛰고 계속 검색
+                itr = (++m)->second.begin();
+            }
+        });
+
+    return answer;
+}
