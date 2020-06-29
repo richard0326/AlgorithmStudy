@@ -1,0 +1,44 @@
+#include <string>
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+int solution(int bridge_length, int weight, vector<int> truck_weights) {
+    int weight_now = 0;
+    queue<int> time, on_weights;
+
+    for (int i = 1;; i++)
+    {
+        if (time.size() > 0)
+        {
+            if (i - time.front() == bridge_length)   //맨 앞의 트럭의 지난 시간이 다리의 길이와 같다면
+            {
+                int end_time = bridge_length + time.front();    //총 타임에 현재까지 걸린 시간에 추가로 걸린 시간만큼 추가시킨다
+                time.pop();     //다 건넌 큐(트럭)를 빼줍니다.
+                weight_now -= on_weights.front();       //총 중량에서 마지막에 빠져나간 트럭의 무게를 빼줍니다.
+                on_weights.pop();       //총 중량에서 큐(트럭무게)를 빼줍니다.
+
+                if (truck_weights.size() == 0 && on_weights.size() == 0)        //남은 트럭도 남은 무게도 없을경우
+                {
+                    return end_time;
+                }
+            }
+        }
+        while (1)
+        {
+            if (weight_now + truck_weights.front() > weight || truck_weights.size() == 0)       //현재 총 중량과 추가로 들어올 중량이 최대 중량보다 크거나 남은 트럭이 없을경우
+            {
+                break;
+            }
+            else
+            {
+                weight_now += truck_weights.front();        //현재 무게에 추가로 들어올 트럭의 무게를 더한다        
+                on_weights.push(truck_weights.front());     //현재 중량 큐에 새로운 트럭무게를 추가                 
+                time.push(i);
+                truck_weights.erase(truck_weights.begin());     //추가한 분의 트럭을 트럭 목록에서 지워줍니다.
+                break;
+            }
+        }
+    }
+}
