@@ -37,13 +37,13 @@ int main()
 			if (i % 2 == 0)
 			{
 				if (j % 2 == 0) {
-					g_colors[i][j] = 1;
+					g_colors[i][j] = true;
 				}
 			}
 			else
 			{
 				if (j % 2 != 0) {
-					g_colors[i][j] = 1;
+					g_colors[i][j] = true;
 				}
 			}
 		}
@@ -77,6 +77,8 @@ int dfs(int index, int cnt, bool color)
 				{
 					ret = retVal;
 				}
+
+				g_visited[column][row] = false;
 			}
 		}
 	}
