@@ -1,3 +1,4 @@
+// 정보올림피아드 1809
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <iostream>
@@ -34,6 +35,7 @@ int main()
 			else
 			{
 				answer[i] = peekPair.first;
+				printf("%d ", answer[i]);
 				break;
 			}
 		}
